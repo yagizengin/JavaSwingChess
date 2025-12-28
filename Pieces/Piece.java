@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 
 import javax.imageio.ImageIO;
 
@@ -22,6 +21,7 @@ public abstract class Piece {
         this.row = row;
         this.isWhite = isWhite;
         this.name = name;
+        this.image = getImage("Assets/" + (isWhite ? "White" : "Black") + "/" + name + ".png");
     }
 
     public BufferedImage getImage(String imagePath) {
