@@ -52,4 +52,12 @@ public class Mouse extends MouseAdapter {
         return false;
     }
 
+    public int getCol() {
+        return getX() / Board.tilesize;
+    }
+
+    public int getRow() {
+        return getY() / Board.tilesize;
+    }
+
 }

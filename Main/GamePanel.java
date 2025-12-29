@@ -9,13 +9,10 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
-import Pieces.Bishop;
-import Pieces.King;
-import Pieces.Knight;
-import Pieces.Pawn;
+import Game.GameController;
+
+import Pieces.Piece.PieceColor;
 import Pieces.Piece;
-import Pieces.Queen;
-import Pieces.Rook;
 
 public class GamePanel extends JPanel implements Runnable {
     Logger logger = Logger.getLogger(GamePanel.class.getName());
@@ -26,66 +23,23 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Board board;
     private Thread gameThread;
+    private GameController gameManager;
     private Mouse mouse;
 
-    private static ArrayList<Piece> pieces;
-    private Piece selectedPiece;
-    private boolean currentColor = true;
+    private PieceColor currentColor = PieceColor.WHITE;
 
     public GamePanel() {
+        this.gameManager = new GameController();
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.black);
 
         this.board = new Board();
-        pieces = new ArrayList<>();
 
-        initPieces();
+        gameManager.initPieces();
 
         mouse = new Mouse();
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
-    }
-
-    public void initPieces() {
-        pieces.add(new Pawn(0, 1, true));
-        pieces.add(new Pawn(1, 1, true));
-        pieces.add(new Pawn(2, 1, true));
-        pieces.add(new Pawn(3, 1, true));
-        pieces.add(new Pawn(4, 1, true));
-        pieces.add(new Pawn(5, 1, true));
-        pieces.add(new Pawn(6, 1, true));
-        pieces.add(new Pawn(7, 1, true));
-
-        pieces.add(new Pawn(0, 6, false));
-        pieces.add(new Pawn(1, 6, false));
-        pieces.add(new Pawn(2, 6, false));
-        pieces.add(new Pawn(3, 6, false));
-        pieces.add(new Pawn(4, 6, false));
-        pieces.add(new Pawn(5, 6, false));
-        pieces.add(new Pawn(6, 6, false));
-        pieces.add(new Pawn(7, 6, false));
-
-        pieces.add(new Rook(0, 0, true));
-        pieces.add(new Rook(7, 0, true));
-        pieces.add(new Rook(0, 7, false));
-        pieces.add(new Rook(7, 7, false));
-
-        pieces.add(new Knight(1, 0, true));
-        pieces.add(new Knight(6, 0, true));
-        pieces.add(new Knight(1, 7, false));
-        pieces.add(new Knight(6, 7, false));
-
-        pieces.add(new Bishop(2, 0, true));
-        pieces.add(new Bishop(5, 0, true));
-        pieces.add(new Bishop(2, 7, false));
-        pieces.add(new Bishop(5, 7, false));
-
-        pieces.add(new Queen(3, 0, true));
-        pieces.add(new Queen(3, 7, false));
-
-        pieces.add(new King(4, 0, true));
-        pieces.add(new King(4, 7, false));
-
     }
 
     public void launch() {
@@ -112,29 +66,16 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         if (mouse.isClicked()) {
-            if (selectedPiece == null) {
-                selectedPiece = pieces.stream().filter(
-                        p -> p.getCol() == mouse.getX() / Board.tilesize &&
-                                p.getRow() == mouse.getY() / Board.tilesize && p.isWhite() == currentColor)
-                        .findFirst().orElse(null);
-                if (selectedPiece != null)
-                    logger.info("selected piece: " + selectedPiece.getName());
-                else
-                    logger.info("no piece selected");
+            int col = mouse.getCol();
+            int row = mouse.getRow();
 
+            if (gameManager.isSelectedPiece()) {
+                if (!gameManager.movePiece(col, row))
+                    gameManager.selectPiece(col, row);
             } else {
-                simulateMove();
-                logger.info("piece moved");
+                gameManager.selectPiece(col, row);
             }
         }
-
-    }
-
-    public void simulateMove() {
-        selectedPiece.setCol(mouse.getX() / Board.tilesize);
-        selectedPiece.setRow(mouse.getY() / Board.tilesize);
-        selectedPiece = null;
-        currentColor = !currentColor;
     }
 
     @Override
@@ -142,8 +83,35 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         board.draw(g2d);
-        for (Piece piece : pieces) {
-            piece.Draw(g2d);
+        for (Piece piece : gameManager.getPieces()) {
+            piece.draw(g2d);
+        }
+
+        if (gameManager.isSelectedPiece()) {
+            g2d.setColor(Color.red);
+            g2d.drawRect(gameManager.getSelectedPiece().getCol() * Board.tilesize,
+                    (7 - gameManager.getSelectedPiece().getRow()) * Board.tilesize,
+                    Board.tilesize, Board.tilesize);
+            g2d.setColor(new Color(127, 127, 127, 127));
+            g2d.fillRect(mouse.getCol() * Board.tilesize,
+                    (7 - mouse.getRow()) * Board.tilesize, Board.tilesize, Board.tilesize);
+            for (Piece piece : gameManager.getPieces()) {
+                if (piece.getCol() == mouse.getCol() &&
+                        piece.getRow() == mouse.getRow() && piece.getColor() == currentColor) {
+                    g2d.setColor(new Color(127, 127, 127, 127));
+                    g2d.fillRect(mouse.getCol() * Board.tilesize,
+                            (7 - mouse.getRow()) * Board.tilesize, Board.tilesize,
+                            Board.tilesize);
+                }
+            }
+            for (int col = 0; col < 8; col++) {
+                for (int row = 0; row < 8; row++) {
+                    if (gameManager.getSelectedPiece().isLegalMove(col, row)) {
+                        g2d.setColor(new Color(127, 255, 127, 127));
+                        g2d.fillRect(col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize);
+                    }
+                }
+            }
         }
     }
 }

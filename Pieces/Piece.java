@@ -8,20 +8,28 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import Main.Board;
+import Interfaces.*;
+import java.util.List;
 
-public abstract class Piece {
+public abstract class Piece implements Drawable, Movable {
 
     protected BufferedImage image;
     protected int col, row;
-    protected boolean isWhite;
+
+    public enum PieceColor {
+        WHITE, BLACK
+    };
+
+    protected PieceColor color;
     protected String name;
 
-    public Piece(int col, int row, boolean isWhite, String name) {
+    // TODO use position instead of col and row
+    public Piece(int col, int row, PieceColor color, String name) {
         this.col = col;
         this.row = row;
-        this.isWhite = isWhite;
+        this.color = color;
         this.name = name;
-        this.image = getImage("Assets/" + (isWhite ? "White" : "Black") + "/" + name + ".png");
+        this.image = getImage("Assets/" + (color == PieceColor.WHITE ? "White" : "Black") + "/" + name + ".png");
     }
 
     public BufferedImage getImage(String imagePath) {
@@ -50,12 +58,12 @@ public abstract class Piece {
         this.row = row;
     }
 
-    public boolean isWhite() {
-        return isWhite;
+    public PieceColor getColor() {
+        return color;
     }
 
-    public void setWhite(boolean isWhite) {
-        this.isWhite = isWhite;
+    public void setColor(PieceColor color) {
+        this.color = color;
     }
 
     public String getName() {
@@ -66,8 +74,12 @@ public abstract class Piece {
         this.name = name;
     }
 
-    public void Draw(Graphics2D g) {
-        g.drawImage(image, col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize, null);
+    public abstract boolean isLegalMove(int col, int row);
+
+    public void draw(Graphics2D g2d) {
+        g2d.drawImage(image, col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize, null);
     }
+
+    public abstract List<int[]> getLegalMoves();
 
 }
