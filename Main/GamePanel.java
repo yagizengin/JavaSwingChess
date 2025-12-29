@@ -1,5 +1,6 @@
 package Main;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -84,15 +85,13 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         board.draw(g2d);
-        for (Piece piece : gameManager.getPieces()) {
-            piece.draw(g2d);
-        }
 
         if (gameManager.isSelectedPiece()) {
-            g2d.setColor(Color.red);
-            g2d.drawRect(gameManager.getSelectedPiece().getCol() * Board.tilesize,
+            g2d.setColor(new Color(255, 200, 127, 127));
+            g2d.fillRect(gameManager.getSelectedPiece().getCol() * Board.tilesize,
                     (7 - gameManager.getSelectedPiece().getRow()) * Board.tilesize,
                     Board.tilesize, Board.tilesize);
+
             g2d.setColor(new Color(127, 127, 127, 127));
             g2d.fillRect(mouse.getCol() * Board.tilesize,
                     (7 - mouse.getRow()) * Board.tilesize, Board.tilesize, Board.tilesize);
@@ -105,16 +104,29 @@ public class GamePanel extends JPanel implements Runnable {
                             Board.tilesize);
                 }
             }
+
             MoveValidator moveValidator = gameManager.getMoveValidator();
             Piece selectedPiece = gameManager.getSelectedPiece();
             for (int col = 0; col < 8; col++) {
                 for (int row = 0; row < 8; row++) {
                     if (moveValidator.isLegalMove(selectedPiece, new Position(col, row))) {
-                        g2d.setColor(new Color(127, 255, 127, 127));
-                        g2d.fillRect(col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize);
+                        g2d.setColor(new Color(0, 0, 0, 127));
+                        g2d.setStroke(new BasicStroke(6));
+                        if (moveValidator.isCapturingPiece(selectedPiece, new Position(col, row))) {
+                            g2d.drawOval(col * Board.tilesize + 3,
+                                    (7 - row) * Board.tilesize + 3,
+                                    Board.tilesize - 6, Board.tilesize - 6);
+                        } else {
+                            g2d.fillOval(col * Board.tilesize + Board.tilesize / 3,
+                                    (7 - row) * Board.tilesize + Board.tilesize / 3,
+                                    Board.tilesize / 3, Board.tilesize / 3);
+                        }
                     }
                 }
             }
+        }
+        for (Piece piece : gameManager.getPieces()) {
+            piece.draw(g2d);
         }
     }
 }

@@ -47,7 +47,7 @@ public abstract class Piece implements Drawable, Movable {
     public void setMoved(boolean moved) {
         this.moved = moved;
     }
-    
+
     public int getCol() {
         return col;
     }
@@ -86,6 +86,7 @@ public abstract class Piece implements Drawable, Movable {
         g2d.drawImage(image, col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize, null);
     }
 
-    public abstract List<int[]> getLegalMoves();
+
+    public abstract List<int[]> getLegalMoves(); // TODO
 
 }

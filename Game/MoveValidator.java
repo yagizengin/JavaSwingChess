@@ -13,6 +13,11 @@ public class MoveValidator {
         return piece.isLegalMove(target.getCol(), target.getRow()) && isPathClear(piece, target);
     }
 
+    public boolean isCapturingPiece(Piece piece, Position target) {
+        Piece targetPiece = gameController.getPiece(target.getCol(), target.getRow());
+        return targetPiece != null && targetPiece.getColor() != piece.getColor();
+    }
+
     public boolean isPathClear(Piece piece, Position target) {
         int col = piece.getCol(), row = piece.getRow();
         int targetCol = target.getCol(), targetRow = target.getRow();
