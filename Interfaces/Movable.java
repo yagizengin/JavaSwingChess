@@ -2,8 +2,10 @@ package Interfaces;
 
 import java.util.List;
 
+import Game.Position;
+
 public interface Movable {
-    boolean isLegalMove(int col, int row);
+    boolean isLegalMove(Position position);
 
     List<int[]> getLegalMoves();
 }

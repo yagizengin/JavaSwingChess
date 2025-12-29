@@ -2,15 +2,22 @@ package Pieces;
 
 import java.util.List;
 
+import Game.Position;
+
 public class Knight extends Piece {
 
-    public Knight(int col, int row, PieceColor color) {
-        super(col, row, color, "Knight");
+    public Knight(Position position, PieceColor color) {
+        super(position, color, "Knight");
     }
 
-    public boolean isLegalMove(int col, int row) {
-        return Math.abs(col - this.col) == 2 && Math.abs(row - this.row) == 1
-                || Math.abs(col - this.col) == 1 && Math.abs(row - this.row) == 2;
+    public boolean isLegalMove(Position position) {
+        int targetCol = position.getCol();
+        int targetRow = position.getRow();
+        int col = this.getCol();
+        int row = this.getRow();
+
+        return Math.abs(targetCol - col) == 2 && Math.abs(targetRow - row) == 1
+                || Math.abs(targetCol - col) == 1 && Math.abs(targetRow - row) == 2;
     }
 
     public List<int[]> getLegalMoves() {

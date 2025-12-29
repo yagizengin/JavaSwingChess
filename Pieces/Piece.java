@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Game.Position;
 import Main.Board;
 import Interfaces.*;
 import java.util.List;
@@ -15,7 +16,6 @@ public abstract class Piece implements Drawable, Movable {
 
     protected boolean moved;
     protected BufferedImage image;
-    protected int col, row;
 
     public enum PieceColor {
         WHITE, BLACK
@@ -24,10 +24,9 @@ public abstract class Piece implements Drawable, Movable {
     protected PieceColor color;
     protected String name;
 
-    // TODO use position instead of col and row
-    public Piece(int col, int row, PieceColor color, String name) {
-        this.col = col;
-        this.row = row;
+    protected Position position;
+    public Piece(Position position, PieceColor color, String name) {
+        this.position = position;
         this.color = color;
         this.name = name;
         this.moved = false;
@@ -49,19 +48,19 @@ public abstract class Piece implements Drawable, Movable {
     }
 
     public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
+        return this.position.getCol();
     }
 
     public int getRow() {
-        return row;
+        return this.position.getRow();
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public PieceColor getColor() {
@@ -80,10 +79,10 @@ public abstract class Piece implements Drawable, Movable {
         this.name = name;
     }
 
-    public abstract boolean isLegalMove(int col, int row);
+    public abstract boolean isLegalMove(Position position);
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(image, col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize, null);
+        g2d.drawImage(image, this.position.getCol() * Board.tilesize, (7 - this.position.getRow()) * Board.tilesize, Board.tilesize, Board.tilesize, null);
     }
 
 

@@ -2,14 +2,20 @@ package Pieces;
 
 import java.util.List;
 
+import Game.Position;
+
 public class Rook extends Piece {
 
-    public Rook(int col, int row, PieceColor color) {
-        super(col, row, color, "Rook");
+    public Rook(Position position, PieceColor color) {
+        super(position, color, "Rook");
     }
 
-    public boolean isLegalMove(int col, int row) {
-        return col == this.col || row == this.row;
+    public boolean isLegalMove(Position position) {
+        int targetCol = position.getCol();
+        int targetRow = position.getRow();
+        int col = this.getCol();
+        int row = this.getRow();
+        return col == targetCol || row == targetRow;
     }
 
     public List<int[]> getLegalMoves() {

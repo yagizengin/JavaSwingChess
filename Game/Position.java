@@ -1,6 +1,6 @@
 package Game;
 
-public class Position {
+public class Position{
     private int col;
     private int row;
 
@@ -15,5 +15,10 @@ public class Position {
 
     public int getRow() {
         return row;
+    }
+
+    public boolean equals(Position obj) {
+        if (this == obj) return true;
+        return this.col == obj.col && this.row == obj.row;
     }
 }

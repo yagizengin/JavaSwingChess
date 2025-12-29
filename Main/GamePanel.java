@@ -68,15 +68,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         if (mouse.isClicked()) {
-            int col = mouse.getCol();
-            int row = mouse.getRow();
-
+            Position mousePos = mouse.getPosition();
+            
             if (gameManager.isSelectedPiece()) {
-                if (!gameManager.movePiece(col, row))
-                    gameManager.selectPiece(col, row);
+                if (!gameManager.movePiece(mousePos)) gameManager.selectPiece(mousePos);
             } else {
-                gameManager.selectPiece(col, row);
+                gameManager.selectPiece(mousePos);
             }
+            
         }
     }
 

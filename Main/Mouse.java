@@ -3,6 +3,8 @@ package Main;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import Game.Position;
+
 public class Mouse extends MouseAdapter {
 
     private int x, y;
@@ -58,6 +60,10 @@ public class Mouse extends MouseAdapter {
 
     public int getRow() {
         return getY() / Board.tilesize;
+    }
+
+    public Position getPosition() {
+        return new Position(getCol(), getRow());
     }
 
 }

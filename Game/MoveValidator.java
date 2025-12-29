@@ -10,27 +10,25 @@ public class MoveValidator {
     }
 
     public boolean isLegalMove(Piece piece, Position target) {
-        return piece.isLegalMove(target.getCol(), target.getRow()) && isPathClear(piece, target);
+        return piece.isLegalMove(target) && isPathClear(piece, target);
     }
 
     public boolean isCapturingPiece(Piece piece, Position target) {
-        Piece targetPiece = gameController.getPiece(target.getCol(), target.getRow());
+        Piece targetPiece = gameController.getPiece(target);
         return targetPiece != null && targetPiece.getColor() != piece.getColor();
     }
 
     public boolean isPathClear(Piece piece, Position target) {
-        int col = piece.getCol(), row = piece.getRow();
-        int targetCol = target.getCol(), targetRow = target.getRow();
-        if (col == targetCol && row == targetRow)
+        if (piece.getPosition().equals(target))
             return false;
 
-        Piece targetPiece = gameController.getPiece(targetCol, targetRow);
+        Piece targetPiece = gameController.getPiece(target);
 
         if (piece.getName().equals("Pawn")) {
-            if (col == targetCol) {
+            if (piece.getCol() == target.getCol()) {
                 if (targetPiece != null)
                     return false;
-                return isClearVertical(col, row, targetRow);
+                return isClearVertical(piece.getCol(), piece.getRow(), target.getRow());
             } else {
                 return targetPiece != null && targetPiece.getColor() != piece.getColor();
             }
@@ -39,17 +37,17 @@ public class MoveValidator {
         if (targetPiece != null && targetPiece.getColor() == piece.getColor())
             return false;
 
-        if (col == targetCol)
-            return isClearVertical(col, row, targetRow);
-        if (row == targetRow)
-            return isClearHorizontal(row, col, targetCol);
-        return isClearDiagonal(col, row, targetCol, targetRow);
+        if (piece.getCol() == target.getCol())
+            return isClearVertical(piece.getCol(), piece.getRow(), target.getRow());
+        if (piece.getRow() == target.getRow())
+            return isClearHorizontal(piece.getRow(), piece.getCol(), target.getCol());
+        return isClearDiagonal(piece.getCol(), piece.getRow(), target.getCol(), target.getRow());
     }
 
     public boolean isClearVertical(int col, int fromRow, int toRow) {
         int direction = toRow > fromRow ? 1 : -1;
         for (int r = fromRow + direction; r != toRow; r += direction) {
-            if (gameController.getPiece(col, r) != null)
+            if (gameController.getPiece(new Position(col, r)) != null)
                 return false;
         }
         return true;
@@ -58,7 +56,7 @@ public class MoveValidator {
     public boolean isClearHorizontal(int row, int fromCol, int toCol) {
         int direction = toCol > fromCol ? 1 : -1;
         for (int c = fromCol + direction; c != toCol; c += direction) {
-            if (gameController.getPiece(c, row) != null)
+            if (gameController.getPiece(new Position(c, row)) != null)
                 return false;
         }
         return true;
@@ -69,7 +67,7 @@ public class MoveValidator {
         int rowDir = toRow > fromRow ? 1 : -1;
 
         for (int c = fromCol + colDir, r = fromRow + rowDir; c != toCol && r != toRow; c += colDir, r += rowDir) {
-            if (gameController.getPiece(c, r) != null)
+            if (gameController.getPiece(new Position(c, r)) != null)
                 return false;
         }
         return true;
