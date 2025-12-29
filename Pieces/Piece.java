@@ -13,6 +13,7 @@ import java.util.List;
 
 public abstract class Piece implements Drawable, Movable {
 
+    protected boolean moved;
     protected BufferedImage image;
     protected int col, row;
 
@@ -29,6 +30,7 @@ public abstract class Piece implements Drawable, Movable {
         this.row = row;
         this.color = color;
         this.name = name;
+        this.moved = false;
         this.image = getImage("Assets/" + (color == PieceColor.WHITE ? "White" : "Black") + "/" + name + ".png");
     }
 
@@ -42,6 +44,10 @@ public abstract class Piece implements Drawable, Movable {
         return image;
     }
 
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+    
     public int getCol() {
         return col;
     }

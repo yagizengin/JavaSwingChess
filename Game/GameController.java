@@ -88,20 +88,22 @@ public class GameController {
             logger.info("selected piece: " + selectedPiece.getName());
     }
 
-    // TODO if eating piece remove it from pieces list
     public boolean movePiece(int col, int row) {
         if (selectedPiece != null) {
-            if (!selectedPiece.isLegalMove(col, row)) {
+            if (!moveValidator.isLegalMove(selectedPiece, new Position(col, row))) {
                 logger.info("illegal move");
                 return false;
             }
-            if (!moveValidator.isPathClear(selectedPiece, new Position(col, row))) {
-                logger.info("path not clear");
-                return false;
+
+            Piece targetPiece = getPiece(col, row);
+            if (targetPiece != null) {
+                logger.info("captured piece" + targetPiece.getName());
+                removePiece(targetPiece);
             }
 
             selectedPiece.setCol(col);
             selectedPiece.setRow(row);
+            selectedPiece.setMoved(true);
             selectedPiece = null;
             currentColor = currentColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
             logger.info("moved piece");
@@ -124,6 +126,10 @@ public class GameController {
                 p -> p.getCol() == col &&
                         p.getRow() == row)
                 .findFirst().orElse(null);
+    }
+
+    public MoveValidator getMoveValidator() {
+        return moveValidator;
     }
 
 }

@@ -10,9 +10,13 @@ public class Pawn extends Piece {
 
     public boolean isLegalMove(int col, int row) {
         if (color == PieceColor.WHITE) {
-            return col == this.col && row == this.row + 1;
+            if (col == this.col)
+                return row == this.row + 1 || (row == this.row + (moved ? 1 : 2));
+            return Math.abs(col - this.col) <= 1 && row == this.row + 1;
         } else {
-            return col == this.col && row == this.row - 1;
+            if (col == this.col)
+                return row == this.row - 1 || (row == this.row - (moved ? 1 : 2));
+            return Math.abs(col - this.col) <= 1 && row == this.row - 1;
         }
     }
 

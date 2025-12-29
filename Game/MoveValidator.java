@@ -9,6 +9,10 @@ public class MoveValidator {
         this.gameController = gameController;
     }
 
+    public boolean isLegalMove(Piece piece, Position target) {
+        return piece.isLegalMove(target.getCol(), target.getRow()) && isPathClear(piece, target);
+    }
+
     public boolean isPathClear(Piece piece, Position target) {
         int col = piece.getCol(), row = piece.getRow();
         int targetCol = target.getCol(), targetRow = target.getRow();
@@ -16,6 +20,17 @@ public class MoveValidator {
             return false;
 
         Piece targetPiece = gameController.getPiece(targetCol, targetRow);
+
+        if (piece.getName().equals("Pawn")) {
+            if (col == targetCol) {
+                if (targetPiece != null)
+                    return false;
+                return isClearVertical(col, row, targetRow);
+            } else {
+                return targetPiece != null && targetPiece.getColor() != piece.getColor();
+            }
+        }
+
         if (targetPiece != null && targetPiece.getColor() == piece.getColor())
             return false;
 

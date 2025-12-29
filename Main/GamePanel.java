@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 import Game.GameController;
+import Game.MoveValidator;
+import Game.Position;
 
 import Pieces.Piece.PieceColor;
 import Pieces.Piece;
@@ -104,9 +105,11 @@ public class GamePanel extends JPanel implements Runnable {
                             Board.tilesize);
                 }
             }
+            MoveValidator moveValidator = gameManager.getMoveValidator();
+            Piece selectedPiece = gameManager.getSelectedPiece();
             for (int col = 0; col < 8; col++) {
                 for (int row = 0; row < 8; row++) {
-                    if (gameManager.getSelectedPiece().isLegalMove(col, row)) {
+                    if (moveValidator.isLegalMove(selectedPiece, new Position(col, row))) {
                         g2d.setColor(new Color(127, 255, 127, 127));
                         g2d.fillRect(col * Board.tilesize, (7 - row) * Board.tilesize, Board.tilesize, Board.tilesize);
                     }
