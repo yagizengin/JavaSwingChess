@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
@@ -17,20 +18,32 @@ import Pieces.Queen;
 import Pieces.Rook;
 
 public class GamePanel extends JPanel implements Runnable {
+    Logger logger = Logger.getLogger(GamePanel.class.getName());
+
     public static final int WIDTH = 512;
     public static final int HEIGHT = 512;
     private final int FPS = 60;
 
     private Board board;
     private Thread gameThread;
+    private Mouse mouse;
+
     private static ArrayList<Piece> pieces;
+    private Piece selectedPiece;
+    private boolean currentColor = true;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.black);
+
         this.board = new Board();
         pieces = new ArrayList<>();
+
         initPieces();
+
+        mouse = new Mouse();
+        this.addMouseListener(mouse);
+        this.addMouseMotionListener(mouse);
     }
 
     public void initPieces() {
@@ -82,23 +95,46 @@ public class GamePanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        double timePerFrame = 1000000000 / FPS;
+        double timePerFrame = 1000000000.0 / FPS;
         long previousTime = System.nanoTime();
 
         while (true) {
             long currentTime = System.nanoTime();
             long passedTime = currentTime - previousTime;
-            previousTime = currentTime;
 
             if (passedTime >= timePerFrame) {
+                previousTime = currentTime;
                 update();
                 repaint();
             }
-
         }
     }
 
     public void update() {
+        if (mouse.isClicked()) {
+            if (selectedPiece == null) {
+                selectedPiece = pieces.stream().filter(
+                        p -> p.getCol() == mouse.getX() / Board.tilesize &&
+                                p.getRow() == mouse.getY() / Board.tilesize && p.isWhite() == currentColor)
+                        .findFirst().orElse(null);
+                if (selectedPiece != null)
+                    logger.info("selected piece: " + selectedPiece.getName());
+                else
+                    logger.info("no piece selected");
+
+            } else {
+                simulateMove();
+                logger.info("piece moved");
+            }
+        }
+
+    }
+
+    public void simulateMove() {
+        selectedPiece.setCol(mouse.getX() / Board.tilesize);
+        selectedPiece.setRow(mouse.getY() / Board.tilesize);
+        selectedPiece = null;
+        currentColor = !currentColor;
     }
 
     @Override
