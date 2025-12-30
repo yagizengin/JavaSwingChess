@@ -1,6 +1,7 @@
 package Pieces;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,8 @@ import Interfaces.*;
 import java.util.List;
 
 public abstract class Piece implements Drawable, Movable {
+
+    private final int pieceSize = 56;
 
     protected int moveCount;
     protected BufferedImage image;
@@ -91,8 +94,12 @@ public abstract class Piece implements Drawable, Movable {
     public abstract boolean isLegalMove(Position position);
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(image, this.position.getCol() * Board.tilesize, (7 - this.position.getRow()) * Board.tilesize,
-                Board.tilesize, Board.tilesize, null);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+        g2d.drawImage(image, this.position.getCol() * Board.tilesize + (Board.tilesize - pieceSize) / 2,
+                (7 - this.position.getRow()) * Board.tilesize + (Board.tilesize - pieceSize) / 2,
+                pieceSize, pieceSize, null);
     }
 
     public abstract List<int[]> getLegalMoves(); // TODO

@@ -31,6 +31,16 @@ public class Board {
             for (int c = 0; c < col; c++) {
                 g2d.setColor((c + r) % 2 == 0 ? new Color(235, 230, 200, 100) : new Color(63, 31, 0, 100));
                 g2d.fillRect(c * tilesize, r * tilesize, tilesize, tilesize);
+                if (c == 0) {
+                    g2d.setColor((c+r) % 2 == 0 ?  new Color(63, 31, 0) : new Color(235, 230, 200));
+                    g2d.setFont(g2d.getFont().deriveFont(16f));
+                    g2d.drawString(String.valueOf(r+1), 2, GamePanel.HEIGHT - ((r+1) * tilesize) + 16);
+                }
+                if(r == 0) {
+                    g2d.setColor((c+r) % 2 == 0 ?  new Color(63, 31, 0) : new Color(235, 230, 200));
+                    g2d.setFont(g2d.getFont().deriveFont(16f));
+                    g2d.drawString(String.valueOf((char)('a' + c)), c * tilesize + tilesize - 16, GamePanel.HEIGHT - 2);
+                }
             }
         }
     }

@@ -69,18 +69,19 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         if (mouse.isClicked()) {
             Position mousePos = mouse.getPosition();
-            
+
             if (gameManager.isSelectedPiece()) {
                 if (!gameManager.movePiece(mousePos)) gameManager.selectPiece(mousePos);
             } else {
                 gameManager.selectPiece(mousePos);
             }
-            
+
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         board.draw(g2d);
