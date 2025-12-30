@@ -1,7 +1,5 @@
 package Pieces;
 
-import java.util.List;
-
 import Game.Position;
 
 public class Bishop extends Piece {
@@ -19,7 +17,4 @@ public class Bishop extends Piece {
         return Math.abs(targetCol - col) == Math.abs(targetRow - row);
     }
 
-    public List<int[]> getLegalMoves() {
-        return null;
-    }
 }

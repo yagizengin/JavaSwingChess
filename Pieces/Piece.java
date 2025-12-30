@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 import Game.Position;
 import Main.Board;
 import Interfaces.*;
-import java.util.List;
+
 
 public abstract class Piece implements Drawable, Movable {
 
@@ -102,6 +102,5 @@ public abstract class Piece implements Drawable, Movable {
                 pieceSize, pieceSize, null);
     }
 
-    public abstract List<int[]> getLegalMoves(); // TODO
 
 }

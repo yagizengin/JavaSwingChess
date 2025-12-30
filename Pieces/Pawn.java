@@ -1,7 +1,5 @@
 package Pieces;
 
-import java.util.List;
-
 import Game.Position;
 
 public class Pawn extends Piece {
@@ -48,7 +46,4 @@ public class Pawn extends Piece {
         return false;
     }
 
-    public List<int[]> getLegalMoves() {
-        return null;
-    }
 }

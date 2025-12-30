@@ -1,7 +1,11 @@
 package Game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Pieces.Pawn;
 import Pieces.Piece;
+import Pieces.Piece.PieceColor;
 
 public class MoveValidator {
     private GameController gameController;
@@ -10,15 +14,33 @@ public class MoveValidator {
         this.gameController = gameController;
     }
 
+    public List<Position> getLegalMoves(Piece piece) {
+        List<Position> legalMoves = new ArrayList<>();
+        for (int col = 0; col < 8; col++) {
+            for (int row = 0; row < 8; row++) {
+                Position target = new Position(col, row);
+                if (isLegalMove(piece, target)) {
+                    legalMoves.add(target);
+                }
+            }
+        }
+        return legalMoves;
+    }
+
+
     public boolean isLegalMove(Piece piece, Position target) {
-        switch (piece.getName()) {
-            case "Pawn":
+            if(piece.getName() == "Pawn") {
                 return ((Pawn) piece).isLegalMove(target, gameController.getPiece(target))
                         && isPathClear(piece, target);
-            default:
-                return piece.isLegalMove(target) && isPathClear(piece, target);
-        }
+            }
+            if(piece.getName() == "King") {
+                if (isSquareAttacked(target, piece.getColor() == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE))
+                    return false;
+            }
+            
+            return piece.isLegalMove(target) && isPathClear(piece, target);
     }
+    
 
     public boolean isCapturingPiece(Piece piece, Position target) {
         Piece targetPiece = gameController.getPiece(target);
@@ -68,5 +90,25 @@ public class MoveValidator {
                 return false;
         }
         return true;
+    }
+
+    public boolean isSquareAttacked(Position target, PieceColor color) {
+        for (Piece p : gameController.getPieces()) {
+            if (p.getColor().equals(color) && canPieceAttack(p, target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canPieceAttack(Piece piece, Position target) {
+        if(piece.getName() == "Pawn") {
+            if(piece.getCol() == target.getCol()) {
+                return false;
+            }
+            return ((Pawn) piece).isLegalMove(target)
+                    && isPathClear(piece, target);
+        }
+        return piece.isLegalMove(target) && isPathClear(piece, target);
     }
 }

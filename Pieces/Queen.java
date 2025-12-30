@@ -1,7 +1,5 @@
 package Pieces;
 
-import java.util.List;
-
 import Game.Position;
 
 public class Queen extends Piece {
@@ -18,7 +16,4 @@ public class Queen extends Piece {
         return Math.abs(targetCol - col) == Math.abs(targetRow - row) || targetCol == col || targetRow == row;
     }
 
-    public List<int[]> getLegalMoves() {
-        return null;
-    }
 }

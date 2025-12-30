@@ -1,7 +1,5 @@
 package Pieces;
 
-import java.util.List;
-
 import Game.Position;
 
 public class Rook extends Piece {
@@ -18,7 +16,4 @@ public class Rook extends Piece {
         return col == targetCol || row == targetRow;
     }
 
-    public List<int[]> getLegalMoves() {
-        return null;
-    }
 }

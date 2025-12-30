@@ -1,10 +1,12 @@
 package Pieces;
 
-import java.util.List;
+import java.util.logging.Logger;
 
 import Game.Position;
 
 public class King extends Piece {
+
+    Logger logger = Logger.getLogger(King.class.getName());
 
     public King(Position position, PieceColor color) {
         super(position, color, "King");
@@ -19,8 +21,5 @@ public class King extends Piece {
         return Math.abs(targetCol - col) <= 1 && Math.abs(targetRow - row) <= 1;
     }
 
-    public List<int[]> getLegalMoves() {
-        return null;
-    }
 
 }

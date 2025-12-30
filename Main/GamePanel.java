@@ -107,24 +107,22 @@ public class GamePanel extends JPanel implements Runnable {
 
             MoveValidator moveValidator = gameManager.getMoveValidator();
             Piece selectedPiece = gameManager.getSelectedPiece();
-            for (int col = 0; col < 8; col++) {
-                for (int row = 0; row < 8; row++) {
-                    if (moveValidator.isLegalMove(selectedPiece, new Position(col, row))) {
-                        g2d.setColor(new Color(0, 0, 0, 127));
-                        g2d.setStroke(new BasicStroke(6));
-                        if (moveValidator.isCapturingPiece(selectedPiece, new Position(col, row))) {
-                            g2d.drawOval(col * Board.tilesize + 3,
-                                    (7 - row) * Board.tilesize + 3,
-                                    Board.tilesize - 6, Board.tilesize - 6);
-                        } else {
-                            g2d.fillOval(col * Board.tilesize + Board.tilesize / 3,
-                                    (7 - row) * Board.tilesize + Board.tilesize / 3,
-                                    Board.tilesize / 3, Board.tilesize / 3);
-                        }
-                    }
+
+            for (Position pos : moveValidator.getLegalMoves(selectedPiece)) {
+                g2d.setColor(new Color(0, 0, 0, 127));
+                g2d.setStroke(new BasicStroke(6));
+                if (moveValidator.isCapturingPiece(selectedPiece, pos)) {
+                    g2d.drawOval(pos.getCol() * Board.tilesize + 3,
+                            (7 - pos.getRow()) * Board.tilesize + 3,
+                            Board.tilesize - 6, Board.tilesize - 6);
+                } else {
+                    g2d.fillOval(pos.getCol() * Board.tilesize + Board.tilesize / 3,
+                            (7 - pos.getRow()) * Board.tilesize + Board.tilesize / 3,
+                            Board.tilesize / 3, Board.tilesize / 3);
                 }
             }
         }
+        
         for (Piece piece : gameManager.getPieces()) {
             piece.draw(g2d);
         }
