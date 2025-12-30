@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class Piece implements Drawable, Movable {
 
-    protected boolean moved;
+    protected int moveCount;
     protected BufferedImage image;
 
     public enum PieceColor {
@@ -25,11 +25,12 @@ public abstract class Piece implements Drawable, Movable {
     protected String name;
 
     protected Position position;
+
     public Piece(Position position, PieceColor color, String name) {
         this.position = position;
         this.color = color;
         this.name = name;
-        this.moved = false;
+        this.moveCount = 0;
         this.image = getImage("Assets/" + (color == PieceColor.WHITE ? "White" : "Black") + "/" + name + ".png");
     }
 
@@ -43,8 +44,16 @@ public abstract class Piece implements Drawable, Movable {
         return image;
     }
 
-    public void setMoved(boolean moved) {
-        this.moved = moved;
+    public void setMoveCount(int moveCount) {
+        this.moveCount = moveCount;
+    }
+
+    public void incrementMoveCount() {
+        this.moveCount++;
+    }
+
+    public int getMoveCount() {
+        return this.moveCount;
     }
 
     public int getCol() {
@@ -82,9 +91,9 @@ public abstract class Piece implements Drawable, Movable {
     public abstract boolean isLegalMove(Position position);
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(image, this.position.getCol() * Board.tilesize, (7 - this.position.getRow()) * Board.tilesize, Board.tilesize, Board.tilesize, null);
+        g2d.drawImage(image, this.position.getCol() * Board.tilesize, (7 - this.position.getRow()) * Board.tilesize,
+                Board.tilesize, Board.tilesize, null);
     }
-
 
     public abstract List<int[]> getLegalMoves(); // TODO
 

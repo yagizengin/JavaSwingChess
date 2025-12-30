@@ -100,7 +100,7 @@ public class GameController {
             }
 
             selectedPiece.setPosition(position);
-            selectedPiece.setMoved(true);
+            selectedPiece.incrementMoveCount();
             selectedPiece = null;
             currentColor = currentColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
             logger.info("moved piece");

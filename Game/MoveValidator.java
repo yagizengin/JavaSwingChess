@@ -1,5 +1,6 @@
 package Game;
 
+import Pieces.Pawn;
 import Pieces.Piece;
 
 public class MoveValidator {
@@ -10,7 +11,13 @@ public class MoveValidator {
     }
 
     public boolean isLegalMove(Piece piece, Position target) {
-        return piece.isLegalMove(target) && isPathClear(piece, target);
+        switch (piece.getName()) {
+            case "Pawn":
+                return ((Pawn) piece).isLegalMove(target, gameController.getPiece(target))
+                        && isPathClear(piece, target);
+            default:
+                return piece.isLegalMove(target) && isPathClear(piece, target);
+        }
     }
 
     public boolean isCapturingPiece(Piece piece, Position target) {
@@ -23,16 +30,6 @@ public class MoveValidator {
             return false;
 
         Piece targetPiece = gameController.getPiece(target);
-
-        if (piece.getName().equals("Pawn")) {
-            if (piece.getCol() == target.getCol()) {
-                if (targetPiece != null)
-                    return false;
-                return isClearVertical(piece.getCol(), piece.getRow(), target.getRow());
-            } else {
-                return targetPiece != null && targetPiece.getColor() != piece.getColor();
-            }
-        }
 
         if (targetPiece != null && targetPiece.getColor() == piece.getColor())
             return false;
