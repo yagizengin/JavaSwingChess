@@ -101,6 +101,15 @@ public class GameController {
 
             selectedPiece.setPosition(position);
             selectedPiece.incrementMoveCount();
+
+            if(selectedPiece.getName() == "Pawn") {
+                if(((Pawn) selectedPiece).promotion(position)) {
+                    addPiece(new Queen(position, selectedPiece.getColor()));
+                    removePiece(selectedPiece);
+                    logger.info("pawn promoted to queen");
+                }
+            }
+
             selectedPiece = null;
             currentColor = currentColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
             logger.info("moved piece");

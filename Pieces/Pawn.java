@@ -35,6 +35,14 @@ public class Pawn extends Piece {
         return targetPiece != null && this.isLegalMove(position);
     }
 
+    public boolean promotion(Position position) {
+        if (color == PieceColor.WHITE) {
+            return position.getRow() == 7;
+        } else {
+            return position.getRow() == 0;
+        }
+    }
+
     // TODO
     public boolean enPassant(Position position, Piece targetPiece) {
         return false;
