@@ -1,6 +1,5 @@
 package Interfaces;
 
-import java.util.List;
 
 import Game.Position;
 

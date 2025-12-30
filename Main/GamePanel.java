@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.Icon;
+import javax.swing.JOptionPane;
 
 import Game.GameController;
 import Game.MoveValidator;
@@ -29,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Mouse mouse;
 
     private PieceColor currentColor = PieceColor.WHITE;
+    private boolean checkmateShown = false;
 
     public GamePanel() {
         this.gameManager = new GameController();
@@ -71,11 +74,17 @@ public class GamePanel extends JPanel implements Runnable {
             Position mousePos = mouse.getPosition();
 
             if (gameManager.isSelectedPiece()) {
-                if (!gameManager.movePiece(mousePos)) gameManager.selectPiece(mousePos);
+                if (!gameManager.movePiece(mousePos))
+                    gameManager.selectPiece(mousePos);
             } else {
                 gameManager.selectPiece(mousePos);
             }
 
+        }
+
+        if (gameManager.isGameOver() && !checkmateShown) {
+            showCheckmateDialog();
+            checkmateShown = true;
         }
     }
 
@@ -122,9 +131,17 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
         }
-        
+
         for (Piece piece : gameManager.getPieces()) {
             piece.draw(g2d);
         }
+    }
+
+    private void showCheckmateDialog() {
+        Icon icon = new javax.swing.ImageIcon(getClass().getResource("/Assets/checkmate.png"));
+        String winner = gameManager.getCurrentColor() == PieceColor.WHITE ? "Black" : "White";
+        JOptionPane.showMessageDialog(this, "Checkmate! " + winner + " wins!", "Game Over",
+                JOptionPane.INFORMATION_MESSAGE, icon);
+        System.exit(0); 
     }
 }

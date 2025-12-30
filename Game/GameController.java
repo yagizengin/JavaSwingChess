@@ -18,6 +18,7 @@ public class GameController {
     private Piece selectedPiece;
     private PieceColor currentColor;
     private MoveValidator moveValidator;
+    private boolean gameOver = false;
 
     public GameController() {
         pieces = new ArrayList<>();
@@ -79,6 +80,7 @@ public class GameController {
     }
 
     public void selectPiece(Position position) {
+        if (gameOver) return;
         selectedPiece = pieces.stream().filter(
                 p -> p.getPosition().equals(position) && p.getColor() == currentColor)
                 .findFirst().orElse(null);
@@ -87,6 +89,7 @@ public class GameController {
     }
 
     public boolean movePiece(Position position) {
+        if (gameOver) return false;
         if (selectedPiece != null) {
             if (!moveValidator.isLegalMove(selectedPiece, position)) {
                 logger.info("illegal move");
@@ -109,10 +112,19 @@ public class GameController {
                     logger.info("pawn promoted to queen");
                 }
             }
-
             selectedPiece = null;
             currentColor = currentColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+
+            
             logger.info("moved piece");
+
+            if (moveValidator.isCheckmate(currentColor)) {
+                logger.info("Checkmate " + (currentColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE) + " wins!");
+                gameOver = true;
+            } else if (moveValidator.isKingInCheck(currentColor)) {
+                logger.info("Check!");
+            }
+
             return true;
         }
         logger.info("no selected piece");
@@ -135,6 +147,14 @@ public class GameController {
 
     public MoveValidator getMoveValidator() {
         return moveValidator;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public PieceColor getCurrentColor() {
+        return currentColor;
     }
 
 }
